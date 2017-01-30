@@ -28,3 +28,6 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+HelloWorld/Library/
+HelloWorld/ProjectSettings/
+HelloWorld/Temp/UnityLockfile

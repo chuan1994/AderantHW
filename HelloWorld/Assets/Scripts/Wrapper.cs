@@ -6,8 +6,8 @@ using System.Text;
 namespace Assets.Scripts
 {
     [Serializable]
-    class ResponseList
+    class Wrapper<T>
     {
-      public List<QuizDetails> quizDetails { get; set; } 
+        public T[] items;
     }
 }

@@ -7,9 +7,9 @@ public class GameController : MonoBehaviour {
 
     public Dictionary<int, GameObject> LandingPositions = new Dictionary<int, GameObject>();
 
-    //For testing purposes!!!!! REMOVE AFTER
-    [SerializeField]
-    List<GameObject> landPostest = new List<GameObject>();
+    ////For testing purposes!!!!! REMOVE AFTER
+    //[SerializeField]
+    //List<GameObject> landPostest = new List<GameObject>();
 
     private void Awake()
     {
@@ -35,6 +35,6 @@ public class GameController : MonoBehaviour {
     void registerLandings(int pos, GameObject go)
     {
         LandingPositions.Add(pos, go);
-        landPostest.Add(go);
+        //landPostest.Add(go);
     }
 }

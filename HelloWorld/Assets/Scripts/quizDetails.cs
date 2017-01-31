@@ -5,12 +5,13 @@ using System.Text;
 
 namespace Assets.Scripts
 {
-    class QuizDetails
+    [Serializable]
+    class quizDetails
     {
-        public String Category { get; set; }
-        public String Answer { get; set; }
-        public String Dollars { get; set; }
-        public String Question { get; set; }
-        public string AirDate { get; set; }
+        public String category;
+        public String answer;
+        public String dollars;
+        public String question;
+        public string air_date;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ public class IdFetcher : MonoBehaviour {
         form.AddField("question", country);
 
         WWW www = new WWW(url, form);
+        
         StartCoroutine(WaitFor(www));
     }
 
@@ -28,8 +30,10 @@ public class IdFetcher : MonoBehaviour {
 
         if (www.error == null)
         {
-            Debug.Log(www.text);
+            QuizDetails[] details = JsonUtility.FromJson<QuizDetails[]>(www.text);
+            Debug.Log(details.Length);
         }
+
         else {
             Debug.Log(www.error.ToString());
         }

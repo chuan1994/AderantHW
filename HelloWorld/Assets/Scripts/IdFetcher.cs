@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class IdFetcher : MonoBehaviour {
 
+    [SerializeField]
     string url = "http://wolfewylie.com/cgi-bin/jeopardy.py?callback=?";
     // Use this for initialization
     void Start () {

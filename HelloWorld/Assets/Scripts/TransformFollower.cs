@@ -4,16 +4,14 @@ using System.Collections;
 public class TransformFollower : MonoBehaviour
 {
     [SerializeField]
-    private Transform target;
+    private GameObject target;
 
     [SerializeField]
-    private Vector3 offsetPosition;
+    private Vector3 origin = new Vector3(0,15,0);
 
-    [SerializeField]
-    private Space offsetPositionSpace = Space.Self;
-
-    [SerializeField]
-    private Vector3 origin = new Vector3(0,0,0);
+    private void Awake() {
+        AssignDelegates();
+    }
 
     private void Update()
     {
@@ -30,7 +28,7 @@ public class TransformFollower : MonoBehaviour
         }
 
         transform.LookAt(origin);
-        Vector3 temp = target.position - origin;
+        Vector3 temp = target.transform.position - origin;
         float angle = Mathf.Atan2(temp.z, temp.x);
 
         float newX = (160 * Mathf.Cos(angle));
@@ -39,7 +37,17 @@ public class TransformFollower : MonoBehaviour
         Vector3 newPoint = new Vector3(newX, transform.position.y, newZ);
 
         Debug.Log(angle);
-        transform.position = Vector3.Lerp(transform.position, newPoint, Time.deltaTime * 0.5f);
-
+        transform.position = Vector3.Lerp(transform.position, newPoint, Time.deltaTime * 1f);
     }
+
+    void AssignDelegates() {
+        GameController.setCurrentPlayer += setTarget;
+    }
+
+    void setTarget(GameObject go) {
+        this.target = go;
+    }
+
+
+
 }

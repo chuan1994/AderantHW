@@ -5,26 +5,33 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     [SerializeField]
-    int playerID;
+    private int playerID;
     [SerializeField]
-    string playerName;
+    private string playerName;
 
     [SerializeField]
-    bool active;
+    private bool active;
 
     [SerializeField]
-    bool canMove;
+    private bool canMove;
 
     [SerializeField]
-    Color color;
+    private Color color;
 
-	// Use this for initialization
-	void Start () {
-		
+    public delegate void register(GameObject go);
+    public static event register registerPlayer;
+
+    private Vector3 origin;
+
+    // Use this for initialization
+    void Start () {
+        origin = new Vector3(0, transform.position.y, 0);
+        registerPlayer(gameObject);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+        Quaternion targetRotation = Quaternion.LookRotation(origin - transform.position);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 0.5f);
 	}
 }

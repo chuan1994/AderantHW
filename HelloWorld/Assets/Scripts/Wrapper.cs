@@ -6,7 +6,7 @@ using System.Text;
 namespace Assets.Scripts
 {
     [Serializable]
-    class Wrapper<T>
+    public class Wrapper<T>
     {
         public T[] items;
     }

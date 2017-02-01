@@ -5,16 +5,18 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     [SerializeField]
-    string playerID { get; set; }
+    int playerID;
+    [SerializeField]
+    string playerName;
 
     [SerializeField]
-    string playerName { get; set; }
+    bool active;
 
     [SerializeField]
-    bool active { get; set; }
+    bool canMove;
 
     [SerializeField]
-    bool canMove { get; set; }
+    Color color;
 
 	// Use this for initialization
 	void Start () {

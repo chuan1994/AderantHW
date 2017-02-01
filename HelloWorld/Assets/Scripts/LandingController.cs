@@ -34,6 +34,13 @@ public class LandingController : MonoBehaviour {
     public void setCountry(string country)
     {
         this.country = country;
+        this.GetComponentInChildren<TextMesh>().text = this.country;
+        Transform childPos = this.GetComponentInChildren<Transform>();
+        childPos.position = transform.position;
+        if (this.gameObject.name.Contains("Landing")){
+            childPos.rotation = transform.rotation;
+        }
+        Quaternion.LookRotation(childPos.position, new Vector3(childPos.position.x, 100f, childPos.position.y));
     }
 
     void OnMouseDown() {

@@ -14,7 +14,7 @@ public class GameController : MonoBehaviour {
     private Difficulty difficulty;
 
     [SerializeField]
-    private List<GameObject> players = new List<GameObject>(); 
+    private Queue<GameObject> players = new Queue<GameObject>(); 
 
     public delegate void difficultyEvent(int diff);
     public static event difficultyEvent setGlobalDifficulty;
@@ -27,11 +27,10 @@ public class GameController : MonoBehaviour {
         AssignDelegates();
     }
 
-
 	// Use this for initialization
 	void Start () {
         setGlobalDifficulty((int)this.difficulty);
-        StartCoroutine(test());
+        //StartCoroutine(test());
 	}
 	
 	// Update is called once per frame
@@ -53,20 +52,21 @@ public class GameController : MonoBehaviour {
     }
 
     void registerPlayers(GameObject go) {
-        players.Add(go);
+        players.Enqueue(go);
     }
 
     IEnumerator test() {
         while (true) {
-            GameObject go = randomPlayer();
+            yield return new WaitForSeconds(5);
+            GameObject go = nextPlayer();
             Debug.Log(go.name);
             setCurrentPlayer(go);
-            yield return new WaitForSeconds(3);
         }
     }
 
-    GameObject randomPlayer() {
-        UnityEngine.Random.InitState((int)System.DateTime.Now.Ticks);
-        return players[UnityEngine.Random.Range(0, players.Count)];
+    GameObject nextPlayer() {
+        GameObject nextPlayer = players.Dequeue();
+        players.Enqueue(nextPlayer);
+        return nextPlayer;
     }
 }

@@ -15,13 +15,13 @@ public class CountryAssignment : MonoBehaviour {
 
     void Awake()
     {
+        assigningDuplicate.AddRange(countries);
         AssignDelegate();
     }
 
 	// Use this for initialization
 	void Start () {
 
-        assigningDuplicate.AddRange(countries);
         ListReadyEvent(countries);
     }
 	

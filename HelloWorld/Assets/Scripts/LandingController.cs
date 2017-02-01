@@ -37,7 +37,7 @@ public class LandingController : MonoBehaviour {
     }
 
     void OnMouseDown() {
-        //QuestionHandler.printQuestion(landingActivated(this.country));
+        QuestionHandler.printQuestion(landingActivated(this.country));
         setOwner(this.gameObject);
     }
 

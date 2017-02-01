@@ -104,7 +104,7 @@ public class QuestionHandler : MonoBehaviour {
             }
 
             if (narrowedList.Count > 0) {
-                Random.InitState((int)System.DateTime.UtcNow.Subtract(new System.DateTime(1970,1,1,0,0,0)).TotalMilliseconds);
+                Random.InitState((int)System.DateTime.Now.Ticks);
                 int rand = Random.Range(0, narrowedList.Count);
                 return narrowedList[rand];
             }

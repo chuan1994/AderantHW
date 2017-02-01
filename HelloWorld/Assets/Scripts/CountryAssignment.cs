@@ -35,7 +35,7 @@ public class CountryAssignment : MonoBehaviour {
     }
 
     void AssignCountry(int pos, GameObject go) {
-        Random.InitState((int)System.DateTime.UtcNow.Subtract(new System.DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds);
+        Random.InitState((int)System.DateTime.Now.Ticks);
         int rand = Random.Range(0, assigningDuplicate.Count);
         go.SendMessage("setCountry", assigningDuplicate[rand]);
         assigningDuplicate.RemoveAt(rand);

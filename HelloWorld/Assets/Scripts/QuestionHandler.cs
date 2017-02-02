@@ -52,7 +52,6 @@ public class QuestionHandler : MonoBehaviour {
             string result = ProcessResponse(www.text);
             Wrapper<Question> questionList = JsonUtility.FromJson<Wrapper<Question>>(result);
             
-            Debug.Log(country + " : " + questionList.items.Length);
             questionMap.Add(country, questionList.items);
         }
 

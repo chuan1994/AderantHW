@@ -5,9 +5,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     [SerializeField]
-    private int playerID;
+    public int playerID;
     [SerializeField]
-    private string playerName;
+    public string playerName;
 
     [SerializeField]
     private bool active;
@@ -40,8 +40,6 @@ public class PlayerController : MonoBehaviour {
         origin = new Vector3(0, transform.position.y, 0);
         target = this.transform.position;
         registerPlayer(gameObject);
-
-        StartCoroutine(test());
     }
 	
 	// Update is called once per frame
@@ -66,20 +64,13 @@ public class PlayerController : MonoBehaviour {
         target = newPos;
     }
 
-    IEnumerator test() {
-        while (true) {
-            yield return new WaitForSeconds(10);
-            target = new Vector3(target.x, target.y, target.z * -1f);
-            canMove = true;
-        }
-    }
-
     void SetActive(GameObject go) {
         if (go.Equals(this.gameObject))
         {
             gameObject.layer = LayerMask.NameToLayer("Outline");
             this.canMove = true;
             this.active = true;
+            target = new Vector3(target.x, target.y, target.z * -1f);
         }
         else {
             gameObject.layer = LayerMask.NameToLayer("Default");

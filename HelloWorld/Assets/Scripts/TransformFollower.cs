@@ -31,8 +31,6 @@ public class TransformFollower : MonoBehaviour
     {
         if (target == null)
         {
-            Debug.LogWarning("Missing target ref !", this);
-
             return;
         }
 
@@ -48,12 +46,12 @@ public class TransformFollower : MonoBehaviour
 
             Vector3 newPoint = new Vector3(newX, 40f , newZ);
 
-            transform.position = Vector3.Lerp(transform.position, newPoint, Time.deltaTime * 1f);
+            transform.position = Vector3.Lerp(transform.position, newPoint, Time.deltaTime * 5f);
             transform.LookAt(origin);
         }
         else if (goOverView) {
-            transform.position = Vector3.Lerp(transform.position, overviewPos.position, Time.deltaTime * 3f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, overviewPos.rotation, Time.deltaTime * 3f);
+            transform.position = Vector3.Lerp(transform.position, overviewPos.position, Time.deltaTime * 5f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, overviewPos.rotation, Time.deltaTime * 5f);
         }
     }
 

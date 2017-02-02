@@ -59,7 +59,6 @@ public class GameController : MonoBehaviour {
         while (true) {
             yield return new WaitForSeconds(5);
             GameObject go = nextPlayer();
-            Debug.Log(go.name);
             setCurrentPlayer(go);
         }
     }

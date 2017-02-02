@@ -14,7 +14,7 @@ public class GameController : MonoBehaviour {
     private Difficulty difficulty;
 
     [SerializeField]
-    private Queue<GameObject> players = new Queue<GameObject>(); 
+    private LinkedList<GameObject> players = new LinkedList<GameObject>(); 
 
     public delegate void difficultyEvent(int diff);
     public static event difficultyEvent setGlobalDifficulty;
@@ -30,8 +30,8 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         setGlobalDifficulty((int)this.difficulty);
-        //StartCoroutine(test());
-	}
+        StartCoroutine(test());
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -52,7 +52,7 @@ public class GameController : MonoBehaviour {
     }
 
     void registerPlayers(GameObject go) {
-        players.Enqueue(go);
+        players.AddLast(go);
     }
 
     IEnumerator test() {
@@ -65,8 +65,9 @@ public class GameController : MonoBehaviour {
     }
 
     GameObject nextPlayer() {
-        GameObject nextPlayer = players.Dequeue();
-        players.Enqueue(nextPlayer);
+        GameObject nextPlayer = players.First.Value;
+        players.RemoveFirst();
+        players.AddLast(nextPlayer);
         return nextPlayer;
     }
 }

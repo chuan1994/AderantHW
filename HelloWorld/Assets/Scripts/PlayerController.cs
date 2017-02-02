@@ -27,6 +27,11 @@ public class PlayerController : MonoBehaviour {
     private Vector3 origin;
     private Vector3 target;
 
+    private void Awake()
+    {
+        AssignDelegates();
+    }
+
     // Use this for initialization
     void Start () {
         origin = new Vector3(0, transform.position.y, 0);
@@ -62,5 +67,19 @@ public class PlayerController : MonoBehaviour {
             target = new Vector3(target.x, target.y, target.z * -1f);
             canMove = true;
         }
+    }
+
+    void SetActive(GameObject go) {
+        if (go.Equals(this.gameObject))
+        {
+            gameObject.layer = LayerMask.NameToLayer("Outline");
+        }
+        else {
+            gameObject.layer = LayerMask.NameToLayer("Default");
+        }
+    }
+
+    void AssignDelegate() {
+
     }
 }

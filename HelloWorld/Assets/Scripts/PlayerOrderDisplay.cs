@@ -32,7 +32,6 @@ public class PlayerOrderDisplay : MonoBehaviour {
     }
 
     void registerPlayer(GameObject go) {
-        Debug.Log(go.name);
         InputField input = textFields[players.Count];
         players.Add(go);
 

@@ -30,6 +30,8 @@ public class PlayerController : MonoBehaviour {
     public static event register registerPlayer;
 
     private Vector3 origin;
+
+    [SerializeField]
     private Vector3 target;
 
     private void Awake()
@@ -57,15 +59,17 @@ public class PlayerController : MonoBehaviour {
         }
         else {
             moving = false;
-            canMove = false;
             transform.position = target;
             //ALERT DONE!!!.
         }
-	}
 
-    public void setNewPos(Vector3 newPos) {
-        target = newPos;
-    }
+        if (active) {
+            canMove = true;
+        }
+        else {
+            canMove = false;
+        }
+	}
 
     void SetActive(GameObject go) {
         if (go.Equals(this.gameObject))
@@ -73,16 +77,17 @@ public class PlayerController : MonoBehaviour {
             gameObject.layer = LayerMask.NameToLayer("Outline");
             this.canMove = true;
             this.active = true;
-            target = new Vector3(target.x, target.y, target.z * -1f);
         }
         else {
             gameObject.layer = LayerMask.NameToLayer("Default");
             this.canMove = false;
             this.active = false;
         }
+
+        return;
     }
 
-    void moveTo(Vector3 location) {
+    public void moveTo(Vector3 location) {
         if (this.active) {
             target = location;
         }

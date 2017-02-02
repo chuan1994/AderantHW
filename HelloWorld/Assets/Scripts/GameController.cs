@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using Assets.Scripts;
+using System.Text.RegularExpressions;
 
 public class GameController : MonoBehaviour {
 
@@ -19,14 +22,25 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     private int totalTurns;
 
-    public delegate void difficultyEvent(int diff);
-    public static event difficultyEvent setGlobalDifficulty;
+    public delegate void intDelegate(int diff);
+    public static event intDelegate setGlobalDifficulty;
 
-    public delegate void playerChange(GameObject go);
-    public static event playerChange setCurrentPlayer;
+    public delegate void gameObjectDelegate(GameObject go);
+    public static event gameObjectDelegate setCurrentPlayer;
+
+    public delegate void stringDelegate(string state);
+    public static event stringDelegate setStateEvent;
+    public static event stringDelegate setUIText;
+
+    public delegate Question questionReturnDelegate(string country);
+    public static event questionReturnDelegate getQuestion;
+
+    public delegate void questionDelegate(Question question);
+    public static event questionDelegate setQuestion;
 
     int dieNumber = 0;
-    bool dieResponded = false;
+    string answer = "";
+    bool responded = false;
 
     private void Awake()
     {
@@ -36,6 +50,7 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         setGlobalDifficulty((int)this.difficulty);
+        
     }
 	
 	// Update is called once per frame
@@ -52,6 +67,7 @@ public class GameController : MonoBehaviour {
         LandingController.registerPosition += registerLandings;
         PlayerController.registerPlayer += registerPlayers;
         QuestionHandler.PercentSetsAdded += gameReadyCheck;
+        QuestionDisplay.sendAnswer += answerSubmit;
     }
 
     IEnumerator runGame()
@@ -59,20 +75,53 @@ public class GameController : MonoBehaviour {
         int moves = 0;
         while (moves < totalTurns)
         {
+            yield return new WaitForFixedUpdate();
             GameObject player = nextPlayer();
+
+            setCurrentPlayer(player);
+
+            //DICE ROLL THEN WAIT FOR MOVEMENT
+            setStateEvent("DiceState");
+
             PlayerController playerController = player.GetComponent<PlayerController>();
-            while (!dieResponded) {
-                //Wait for dice to roll
+            while (!responded) {
+                yield return new WaitForEndOfFrame();
+            }
+            responded = false;
+
+            playerController.pos = calcPos(playerController.pos, dieNumber);
+            GameObject landingSpot = LandingPositions[playerController.pos];
+            Vector3 newPos = landingSpot.transform.position;
+            newPos.y = player.transform.position.y;
+            playerController.moveTo(newPos);
+            yield return new WaitForSeconds(3);
+
+            //WAIT FOR QUESTION
+            setStateEvent("QuestionState");
+            Question q = getQuestion(landingSpot.GetComponent<LandingController>().country);
+            setQuestion(q);
+
+            while (!responded) {
+                yield return new WaitForEndOfFrame();
+            }
+            responded = false;
+
+            if (correctAnswer(this.answer, q.answer))
+            {
+                setUIText("Congratulations! You are correct!");
+                landingSpot.GetComponent<LandingController>().owner = player;
+            }
+            else {
+                setUIText("Sorry, the correct answer was " + q.answer);
             }
 
-            dieResponded = false;
-            playerController.pos = calcPos(playerController.pos, dieNumber);
-
-            playerController.setNewPos(LandingPositions[playerController.pos].transform.position);
+            yield return new WaitForSeconds(4);
 
 
-            yield return new WaitForSeconds(1);
+            moves++;
         }
+
+        yield return null;
     }
 
 
@@ -88,12 +137,16 @@ public class GameController : MonoBehaviour {
 
     void registerPlayers(GameObject go) {
         players.AddLast(go);
+    }
 
+    void answerSubmit(String answer) {
+        this.answer = answer;
+        responded = true;
     }
 
     void DieResonse(int value) {
         dieNumber = value;
-        dieResponded = true;
+        responded = true;
     }
 
     GameObject nextPlayer() {
@@ -110,5 +163,17 @@ public class GameController : MonoBehaviour {
         }
 
         return value - 44;
+    }
+
+    bool correctAnswer(string a, string b) {
+        Regex reg = new Regex("(?i)(the|a|an)");
+        a = reg.Replace(a.Trim().ToLower(), "");
+        b = reg.Replace(b.Trim().ToLower(), "");
+
+        if (a.Trim().ToLower().Equals(b.Trim().ToLower())){
+            return true;
+        }
+
+        return false;
     }
 }

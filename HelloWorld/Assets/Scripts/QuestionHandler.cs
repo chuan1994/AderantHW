@@ -81,7 +81,7 @@ public class QuestionHandler : MonoBehaviour {
     {
         GameController.setGlobalDifficulty += setDifficulty;
         CountryAssignment.ListReadyEvent += setCountryList;
-        LandingController.landingActivated += getRandomQuestion;
+        GameController.getQuestion += getRandomQuestion;
     }
 
     void setCountryList(List<string> countries) {

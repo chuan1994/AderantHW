@@ -14,9 +14,6 @@ public class LandingController : MonoBehaviour {
     [SerializeField]
     public GameObject owner;
 
-    public delegate Question activated(string country);
-    public static event activated landingActivated;
-
     //delegate-event to register gameobject as a landing object
     public delegate void register(int pos, GameObject go);
     public static event register registerPosition;

@@ -24,6 +24,7 @@ public class UITextEdit : MonoBehaviour {
 
     void AssignDelegates() {
         GameController.setCurrentPlayer += setPlayerName;
+        GameController.setUIText += setText;
     }
 
     void setPlayerName(GameObject go) {
@@ -34,5 +35,9 @@ public class UITextEdit : MonoBehaviour {
         }
 
         text.text = name + "'s turn!";
+    }
+
+    void setText(string input) {
+        text.text = input;
     }
 }

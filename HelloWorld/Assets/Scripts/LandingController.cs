@@ -12,7 +12,7 @@ public class LandingController : MonoBehaviour {
     public string country;
 
     [SerializeField]
-    public GameObject owner;
+    public GameObject owner = null;
 
     //delegate-event to register gameobject as a landing object
     public delegate void register(int pos, GameObject go);

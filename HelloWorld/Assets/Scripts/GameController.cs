@@ -41,6 +41,7 @@ public class GameController : MonoBehaviour {
     int dieNumber = 0;
     string answer = "";
     bool responded = false;
+    bool correct = false;
 
     private void Awake()
     {
@@ -80,43 +81,45 @@ public class GameController : MonoBehaviour {
 
             setCurrentPlayer(player);
 
-            //DICE ROLL THEN WAIT FOR MOVEMENT
-            setStateEvent("DiceState");
+            //CHECK IF CURRENT POSITION IS OWNED BY ANOTHER PLAYER
+            correct = true;
+            yield return new WaitForSeconds(1);
 
-            PlayerController playerController = player.GetComponent<PlayerController>();
-            while (!responded) {
-                yield return new WaitForEndOfFrame();
-            }
-            responded = false;
+            GameObject currentLanding = LandingPositions[player.GetComponent<PlayerController>().pos];
+            if (currentLanding.GetComponent<LandingController>().owner != null  && currentLanding.GetComponent<LandingController>().owner != player) {
+                setUIText("This is owned by " + currentLanding.GetComponent<LandingController>().owner.GetComponent<PlayerController>().playerName);
+                yield return new WaitForSeconds(1);
+                setUIText("Get this question right to continue");
 
-            playerController.pos = calcPos(playerController.pos, dieNumber);
-            GameObject landingSpot = LandingPositions[playerController.pos];
-            Vector3 newPos = landingSpot.transform.position;
-            newPos.y = player.transform.position.y;
-            playerController.moveTo(newPos);
-            yield return new WaitForSeconds(3);
-
-            //WAIT FOR QUESTION
-            setStateEvent("QuestionState");
-            Question q = getQuestion(landingSpot.GetComponent<LandingController>().country);
-            setQuestion(q);
-
-            while (!responded) {
-                yield return new WaitForEndOfFrame();
-            }
-            responded = false;
-
-            if (correctAnswer(this.answer, q.answer))
-            {
-                setUIText("Congratulations! You are correct!");
-                landingSpot.GetComponent<LandingController>().owner = player;
-            }
-            else {
-                setUIText("Sorry, the correct answer was " + q.answer);
+                setStateEvent("QuestionState");
+                yield return StartCoroutine(QuestionWait(player, currentLanding));
             }
 
+
+            if (correct) {
+                //DICE ROLL THEN WAIT FOR MOVEMENT
+                setStateEvent("DiceState");
+
+                PlayerController playerController = player.GetComponent<PlayerController>();
+                while (!responded)
+                {
+                    yield return new WaitForEndOfFrame();
+                }
+                responded = false;
+
+                playerController.pos = calcPos(playerController.pos, dieNumber);
+                GameObject landingSpot = LandingPositions[playerController.pos];
+                Vector3 newPos = landingSpot.transform.position;
+                newPos.y = player.transform.position.y;
+                playerController.moveTo(newPos);
+                yield return new WaitForSeconds(3);
+
+                //WAIT FOR QUESTION
+                setStateEvent("QuestionState");
+                yield return StartCoroutine(QuestionWait(player, landingSpot));
+            }
+          
             yield return new WaitForSeconds(4);
-
 
             moves++;
         }
@@ -124,6 +127,31 @@ public class GameController : MonoBehaviour {
         yield return null;
     }
 
+
+    IEnumerator QuestionWait(GameObject player, GameObject landingSpot) {
+        Question q = getQuestion(landingSpot.GetComponent<LandingController>().country);
+        setQuestion(q);
+
+        while (!responded)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        responded = false;
+
+        if (correctAnswer(this.answer, q.answer))
+        {
+            setUIText("Congratulations! You are correct!");
+            if (landingSpot.GetComponent<LandingController>().owner == null) {
+                landingSpot.GetComponent<LandingController>().owner = player;
+                //WIN SEQUENCEEEEEE!!!!!!!!!!!!!!!
+            }
+        }
+        else
+        {
+            setUIText("Sorry, the correct answer was " + q.answer);
+            //LOSE SEQUENCE!!!!!!!!!!!!!
+        }
+    }
 
     void registerLandings(int pos, GameObject go){
         LandingPositions.Add(pos, go);
@@ -171,9 +199,11 @@ public class GameController : MonoBehaviour {
         b = reg.Replace(b.Trim().ToLower(), "");
 
         if (a.Trim().ToLower().Equals(b.Trim().ToLower())){
+            correct = true;
             return true;
         }
 
+        correct = false;
         return false;
     }
 }

@@ -19,10 +19,12 @@ public class PlayerController : MonoBehaviour {
     private bool moving = false;
 
     [SerializeField]
-    private Color color;
+    public Color color;
 
     [SerializeField]
     private int initPos;
+
+    public int pos;
 
     public delegate void register(GameObject go);
     public static event register registerPlayer;
@@ -37,6 +39,7 @@ public class PlayerController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        pos = initPos;
         origin = new Vector3(0, transform.position.y, 0);
         target = this.transform.position;
         registerPlayer(gameObject);
@@ -60,7 +63,7 @@ public class PlayerController : MonoBehaviour {
         }
 	}
 
-    void setNewPos(Vector3 newPos) {
+    public void setNewPos(Vector3 newPos) {
         target = newPos;
     }
 

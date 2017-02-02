@@ -43,13 +43,7 @@ public class LandingController : MonoBehaviour {
         Quaternion.LookRotation(childPos.position, new Vector3(childPos.position.x, 100f, childPos.position.y));
     }
 
-    void OnMouseDown() {
-        QuestionHandler.printQuestion(landingActivated(this.country));
-        setOwner(this.gameObject);
-    }
-
     void setOwner(GameObject go) {
-
         //this.owner = go;
         Color col = Color.blue;
         Material newMat = new Material(Shader.Find("Standard"));

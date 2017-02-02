@@ -33,7 +33,6 @@ public class UITextEdit : MonoBehaviour {
             name = "Player " + go.GetComponent<PlayerController>().playerID;
         }
 
-        Debug.Log(name);
         text.text = name + "'s turn!";
     }
 }

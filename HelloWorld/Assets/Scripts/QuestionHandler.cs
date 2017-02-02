@@ -4,16 +4,19 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuestionHandler : MonoBehaviour {
 
     [SerializeField]
     string url = "http://wolfewylie.com/cgi-bin/jeopardy.py?callback=?";
 
-
     List<string> countries = new List<string>();
 
     Dictionary<string, Question[]> questionMap = new Dictionary<string, Question[]>();
+
+    public delegate void addedQuestionSet(int totalQuestions);
+    public static event addedQuestionSet PercentSetsAdded;
 
     int difficulty;
 
@@ -53,6 +56,7 @@ public class QuestionHandler : MonoBehaviour {
             Wrapper<Question> questionList = JsonUtility.FromJson<Wrapper<Question>>(result);
             
             questionMap.Add(country, questionList.items);
+            PercentSetsAdded(questionMap.Count * 2);
         }
 
         else {

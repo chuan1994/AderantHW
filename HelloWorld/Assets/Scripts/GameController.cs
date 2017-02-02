@@ -14,13 +14,19 @@ public class GameController : MonoBehaviour {
     private Difficulty difficulty;
 
     [SerializeField]
-    private LinkedList<GameObject> players = new LinkedList<GameObject>(); 
+    private LinkedList<GameObject> players = new LinkedList<GameObject>();
+
+    [SerializeField]
+    private int totalTurns;
 
     public delegate void difficultyEvent(int diff);
     public static event difficultyEvent setGlobalDifficulty;
 
     public delegate void playerChange(GameObject go);
     public static event playerChange setCurrentPlayer;
+
+    int dieNumber = 0;
+    bool dieResponded = false;
 
     private void Awake()
     {
@@ -30,7 +36,6 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         setGlobalDifficulty((int)this.difficulty);
-        StartCoroutine(test());
     }
 	
 	// Update is called once per frame
@@ -43,26 +48,52 @@ public class GameController : MonoBehaviour {
     }
 
     void AssignDelegates() {
+        DieController.GetRandomRoll += DieResonse;
         LandingController.registerPosition += registerLandings;
         PlayerController.registerPlayer += registerPlayers;
+        QuestionHandler.PercentSetsAdded += gameReadyCheck;
     }
+
+    IEnumerator runGame()
+    {
+        int moves = 0;
+        while (moves < totalTurns)
+        {
+            GameObject player = nextPlayer();
+            PlayerController playerController = player.GetComponent<PlayerController>();
+            while (!dieResponded) {
+                //Wait for dice to roll
+            }
+
+            dieResponded = false;
+            playerController.pos = calcPos(playerController.pos, dieNumber);
+
+            playerController.setNewPos(LandingPositions[playerController.pos].transform.position);
+
+
+            yield return new WaitForSeconds(1);
+        }
+    }
+
 
     void registerLandings(int pos, GameObject go){
         LandingPositions.Add(pos, go);
     }
 
-    void registerPlayers(GameObject go) {
-        players.AddLast(go);
+    void gameReadyCheck(int percent) {
+        if (percent == 100) {
+            StartCoroutine(runGame());
+        }
     }
 
-    IEnumerator test() {
-        int i = 0;
-        while (i < 3) {
-            yield return new WaitForSeconds(2);
-            GameObject go = nextPlayer();
-            setCurrentPlayer(go);
-            i++;
-        }
+    void registerPlayers(GameObject go) {
+        players.AddLast(go);
+
+    }
+
+    void DieResonse(int value) {
+        dieNumber = value;
+        dieResponded = true;
     }
 
     GameObject nextPlayer() {
@@ -70,5 +101,14 @@ public class GameController : MonoBehaviour {
         players.RemoveFirst();
         players.AddLast(nextPlayer);
         return nextPlayer;
+    }
+
+    int calcPos(int current, int increase) {
+        int value = current + increase;
+        if (value <= 43) {
+            return value;
+        }
+
+        return value - 44;
     }
 }

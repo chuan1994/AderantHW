@@ -56,10 +56,12 @@ public class GameController : MonoBehaviour {
     }
 
     IEnumerator test() {
-        while (true) {
-            yield return new WaitForSeconds(5);
+        int i = 0;
+        while (i < 3) {
+            yield return new WaitForSeconds(2);
             GameObject go = nextPlayer();
             setCurrentPlayer(go);
+            i++;
         }
     }
 

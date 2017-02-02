@@ -16,6 +16,9 @@ public class PlayerController : MonoBehaviour {
     private bool canMove = false;
 
     [SerializeField]
+    private bool moving = false;
+
+    [SerializeField]
     private Color color;
 
     [SerializeField]
@@ -46,11 +49,13 @@ public class PlayerController : MonoBehaviour {
         Quaternion targetRotation = Quaternion.LookRotation(origin - transform.position);
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 1f);
 
-        if (Vector3.Distance(transform.position, target) > 0.1f && canMove)
+        if ((Vector3.Distance(transform.position, target) > 0.1f) && (canMove || moving))
         {
+            moving = true;
             transform.position = Vector3.Lerp(transform.position, target, Time.deltaTime * 1f);
         }
         else {
+            moving = false;
             canMove = false;
             transform.position = target;
             //ALERT DONE!!!.
@@ -73,13 +78,23 @@ public class PlayerController : MonoBehaviour {
         if (go.Equals(this.gameObject))
         {
             gameObject.layer = LayerMask.NameToLayer("Outline");
+            this.canMove = true;
+            this.active = true;
         }
         else {
             gameObject.layer = LayerMask.NameToLayer("Default");
+            this.canMove = false;
+            this.active = false;
         }
     }
 
-    void AssignDelegate() {
+    void moveTo(Vector3 location) {
+        if (this.active) {
+            target = location;
+        }
+    }
 
+    void AssignDelegates() {
+        GameController.setCurrentPlayer += SetActive;
     }
 }

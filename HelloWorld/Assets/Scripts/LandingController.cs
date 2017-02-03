@@ -40,12 +40,12 @@ public class LandingController : MonoBehaviour {
         Quaternion.LookRotation(childPos.position, new Vector3(childPos.position.x, 100f, childPos.position.y));
     }
 
-    void setOwner(GameObject go) {
+    public void setOwner(GameObject go) {
         //this.owner = go;
-        Color col = Color.blue;
-        Material newMat = new Material(Shader.Find("Standard"));
-        newMat.color = col;
+        Color col = go.GetComponent<PlayerController>().color;
+        //Material newMat = new Material(Shader.Find("Standard"));
+        //newMat.color = col;
 
-        this.gameObject.GetComponent<MeshRenderer>().material = newMat;
+        this.gameObject.GetComponent<MeshRenderer>().material.color = col;
     }
 }

@@ -109,6 +109,11 @@ public class QuestionHandler : MonoBehaviour {
             if (narrowedList.Count > 0) {
                 Random.InitState((int)System.DateTime.Now.Ticks);
                 int rand = Random.Range(0, narrowedList.Count);
+                Question q = narrowedList[rand];
+                if (q.question.Contains("href")) {
+                    q = getRandomQuestion(country);
+                }
+
                 return narrowedList[rand];
             }
         }

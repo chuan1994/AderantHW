@@ -43,6 +43,7 @@ public class PlayerOrderDisplay : MonoBehaviour {
         cb.highlightedColor = color; 
         input.colors = cb;
         input.text = "Player " + go.GetComponent<PlayerController>().playerID;
+        input.placeholder.GetComponent<Text>().text = input.text;
     }
 
     void onGameReady(int percent) {

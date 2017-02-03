@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class QuestionDisplay : MonoBehaviour {
 
     [SerializeField]
+    private Text country;
+    [SerializeField]
     private Text category;
 
     [SerializeField]
@@ -33,7 +35,13 @@ public class QuestionDisplay : MonoBehaviour {
 		
 	}
 
-    void setQuestion(Question question) {
+    private void OnEnable()
+    {
+        GetComponentInChildren<Button>().interactable = true;
+    }
+
+    void setQuestion(Question question, string country) {
+        this.country.text = "Hello " + country;
         this.category.text = question.category;
         this.question.text = question.question;
     }

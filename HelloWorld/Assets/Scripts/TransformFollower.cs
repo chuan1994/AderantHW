@@ -13,16 +13,13 @@ public class TransformFollower : MonoBehaviour
     private bool followTarget = false;
 
     [SerializeField]
-    private bool goOverView = true;
-
-    [SerializeField]
     private Transform overviewPos;
 
     private void Awake() {
         AssignDelegates();
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         Refresh();
     }
@@ -49,7 +46,7 @@ public class TransformFollower : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position, newPoint, Time.deltaTime * 5f);
             transform.LookAt(origin);
         }
-        else if (goOverView) {
+        else {
             transform.position = Vector3.Lerp(transform.position, overviewPos.position, Time.deltaTime * 5f);
             transform.rotation = Quaternion.Lerp(transform.rotation, overviewPos.rotation, Time.deltaTime * 5f);
         }
@@ -57,12 +54,16 @@ public class TransformFollower : MonoBehaviour
 
     void AssignDelegates() {
         GameController.setCurrentPlayer += setTarget;
+        GameController.cameraOverHead += winScreen;
     }
 
     void setTarget(GameObject go) {
         this.target = go;
+        followTarget = true;
     }
 
-
-
+    void winScreen()
+    {
+        followTarget = false;
+    }
 }

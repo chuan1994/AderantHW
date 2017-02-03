@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Assets.Scripts;
 using System.Text.RegularExpressions;
+using System.Text;
+using System.Linq;
 
 public class GameController : MonoBehaviour {
 
@@ -22,6 +24,9 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     private int totalTurns;
 
+    public delegate void emptyDelegate();
+    public static event emptyDelegate cameraOverHead;
+
     public delegate void intDelegate(int diff);
     public static event intDelegate setGlobalDifficulty;
 
@@ -35,8 +40,8 @@ public class GameController : MonoBehaviour {
     public delegate Question questionReturnDelegate(string country);
     public static event questionReturnDelegate getQuestion;
 
-    public delegate void questionDelegate(Question question);
-    public static event questionDelegate setQuestion;
+    public delegate void questionStringDelegate(Question question, String country);
+    public static event questionStringDelegate setQuestion;
 
     int dieNumber = 0;
     string answer = "";
@@ -114,23 +119,30 @@ public class GameController : MonoBehaviour {
                 playerController.moveTo(newPos);
                 yield return new WaitForSeconds(3);
 
+                if (landingSpot.GetComponent<LandingController>().owner != null) {
+                    continue;
+                }
+
                 //WAIT FOR QUESTION
                 setStateEvent("QuestionState");
                 yield return StartCoroutine(QuestionWait(player, landingSpot));
             }
           
-            yield return new WaitForSeconds(4);
+            yield return new WaitForSeconds(2);
 
             moves++;
         }
 
-        yield return null;
+        setUIText("Game Over!");
+        setStateEvent("gameover");
+        yield return new WaitForSeconds(1);
+        DisplayEndScene();
     }
 
 
     IEnumerator QuestionWait(GameObject player, GameObject landingSpot) {
         Question q = getQuestion(landingSpot.GetComponent<LandingController>().country);
-        setQuestion(q);
+        setQuestion(q, landingSpot.GetComponent<LandingController>().country);
 
         while (!responded)
         {
@@ -142,7 +154,7 @@ public class GameController : MonoBehaviour {
         {
             setUIText("Congratulations! You are correct!");
             if (landingSpot.GetComponent<LandingController>().owner == null) {
-                landingSpot.GetComponent<LandingController>().owner = player;
+                landingSpot.GetComponent<LandingController>().setOwner(player);
                 //WIN SEQUENCEEEEEE!!!!!!!!!!!!!!!
             }
         }
@@ -206,4 +218,54 @@ public class GameController : MonoBehaviour {
         correct = false;
         return false;
     }
+
+    void DisplayEndScene()
+    {
+        string result = CalcWinner();
+        //setUIText(result);
+        cameraOverHead();
+    }
+
+    string CalcWinner() {
+
+        Dictionary<GameObject, int> winMap = new Dictionary<GameObject, int>();
+        foreach (GameObject go in players) {
+            winMap.Add(go, 0);
+        }
+
+        foreach (GameObject go in LandingPositions.Values) {
+            if (go.GetComponent<LandingController>().owner != null) {
+                winMap[go.GetComponent<LandingController>().owner] = winMap[go.GetComponent<LandingController>().owner] + 1;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+
+        int max = winMap.Values.Max();
+        List<GameObject> winners = new List<GameObject>();
+
+        foreach (GameObject go in winMap.Keys) {
+            if (winMap[go] == max) {
+                winners.Add(go);
+            }
+        }
+
+        if (winners.Count == 1)
+        {
+            sb.Append("The winner is " + winners[0].GetComponent<PlayerController>().playerName);
+        }
+        else {
+            sb.Append("The winner's are:");
+            foreach (GameObject go in winners) {
+                sb.Append("\n");
+                sb.Append(go.GetComponent<PlayerController>().playerName);
+            }
+
+            sb.Append("!");
+        }
+
+        sb.Append("\nScore : " + max);
+
+        return sb.ToString();
+    }
+
 }

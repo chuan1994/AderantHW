@@ -25,18 +25,24 @@ public class InfoStateController : MonoBehaviour {
         GameController.setStateEvent += setActive;
     }
 
-    void setActive(string name) {
-        foreach (GameObject g in canvasItems) {
+    void setActive(string name)
+    {
+
+        if (name.Equals("gameover")) {
+            this.gameObject.SetActive(false);
+        }
+
+        foreach (GameObject g in canvasItems)
+        {
             if (g.name.ToLower().Equals(name.ToLower()))
             {
                 g.SetActive(true);
             }
-            else {
+            else
+            {
                 g.SetActive(false);
             }
         }
 
     }
-
-
 }
